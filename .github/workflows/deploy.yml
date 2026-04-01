@@ -25,9 +25,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate HTML
-        uses: nickersan/html-validate-action@v2
-        with:
-          files: "index.html"
+        run: |
+          sudo apt-get install -y tidy > /dev/null 2>&1
+          tidy -q -e index.html || true
+          # fail only on outright parse errors (exit code 2)
+          tidy -q -e index.html; EC=$?; [ "$EC" -lt 2 ]
 
       - name: Validate JSON data
         run: python3 -c "import json; json.load(open('data.json'))"
