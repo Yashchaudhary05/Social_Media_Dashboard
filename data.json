@@ -1,0 +1,73 @@
+{
+  "totalFollowers": 23004,
+  "lastUpdated": "2024-04-15T10:30:00Z",
+  "platforms": [
+    {
+      "id": "facebook",
+      "name": "Facebook",
+      "icon": "./images/icon-facebook.svg",
+      "username": "@YashChaudhary",
+      "followers": 1987,
+      "label": "Followers",
+      "changeToday": 12,
+      "changeDirection": "up",
+      "overview": [
+        { "metric": "Page Views", "value": 87, "changePercent": 3, "changeDirection": "up" },
+        { "metric": "Likes", "value": 52, "changePercent": 2, "changeDirection": "down" }
+      ],
+      "trend": [1820, 1845, 1870, 1890, 1920, 1955, 1987]
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "icon": "./images/icon-instagram.svg",
+      "username": "@YashChaudhary",
+      "followers": 11000,
+      "followersDisplay": "11k",
+      "label": "Followers",
+      "changeToday": 1099,
+      "changeDirection": "up",
+      "overview": [
+        { "metric": "Likes", "value": 5462, "changePercent": 2257, "changeDirection": "up" },
+        { "metric": "Profile Views", "value": 52000, "valueDisplay": "52k", "changePercent": 1375, "changeDirection": "up" }
+      ],
+      "trend": [8500, 8900, 9400, 9800, 10200, 10600, 11000]
+    },
+    {
+      "id": "twitter",
+      "name": "Twitter",
+      "icon": "./images/icon-twitter.svg",
+      "username": "@YashChaudhary",
+      "followers": 1044,
+      "label": "Followers",
+      "changeToday": 99,
+      "changeDirection": "up",
+      "overview": [
+        { "metric": "Retweets", "value": 117, "changePercent": 303, "changeDirection": "up" },
+        { "metric": "Likes", "value": 507, "changePercent": 553, "changeDirection": "up" }
+      ],
+      "trend": [780, 820, 880, 920, 960, 1000, 1044]
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "icon": "./images/icon-youtube.svg",
+      "username": "@YashChaudhary",
+      "followers": 8239,
+      "label": "Subscribers",
+      "changeToday": 144,
+      "changeDirection": "down",
+      "overview": [
+        { "metric": "Likes", "value": 107, "changePercent": 19, "changeDirection": "down" },
+        { "metric": "Total Views", "value": 1407, "changePercent": 12, "changeDirection": "down" }
+      ],
+      "trend": [8900, 8750, 8600, 8500, 8400, 8350, 8239]
+    }
+  ],
+  "notifications": [
+    { "platform": "instagram", "message": "New milestone: 11k followers!", "time": "2m ago", "read": false },
+    { "platform": "facebook", "message": "Page views up 3% today", "time": "15m ago", "read": false },
+    { "platform": "twitter", "message": "Your tweet got 117 retweets", "time": "1h ago", "read": true },
+    { "platform": "youtube", "message": "Subscriber count dropped by 144", "time": "3h ago", "read": true }
+  ]
+}
