@@ -10,14 +10,20 @@
   --limegreen-glow: rgba(29, 180, 137, 0.25);
   --brightred: #dc414c;
   --brightred-glow: rgba(220, 65, 76, 0.25);
-  --facebook: #198ff5;
-  --facebook-glow: rgba(25, 143, 245, 0.2);
-  --twitter: #1ca0f2;
-  --twitter-glow: rgba(28, 160, 242, 0.2);
+  --meta: #0081FB;
+  --meta-glow: rgba(0, 129, 251, 0.2);
+  --x: #000000;
+  --x-glow: rgba(100, 100, 100, 0.2);
   --instagram-start: #fdc468;
   --instagram-middle: #ee867c;
   --instagram-end: #df4996;
   --instagram-glow: rgba(223, 73, 150, 0.2);
+  --linkedin: #0A66C2;
+  --linkedin-glow: rgba(10, 102, 194, 0.2);
+  --github: #6e40c9;
+  --github-glow: rgba(110, 64, 201, 0.2);
+  --accent: #198ff5;
+  --accent-glow: rgba(25, 143, 245, 0.2);
   --youtube: #c4032a;
   --youtube-glow: rgba(196, 3, 42, 0.2);
   --toggle-bg-light: #aeb3cb;
@@ -142,14 +148,14 @@ h2 {
   gap: 0.75rem;
   letter-spacing: -0.01em;
 }
-a, a:active, a:visited { text-decoration: none; color: var(--facebook); }
+a, a:active, a:visited { text-decoration: none; color: var(--accent); }
 a:hover { text-decoration: underline; }
 
 /* ─── Badge ─── */
 .badge {
   font-size: 0.65rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--facebook), #764ba2);
+  background: linear-gradient(135deg, var(--accent), #764ba2);
   color: #fff;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
@@ -171,7 +177,7 @@ a:hover { text-decoration: underline; }
 .loader__spinner {
   width: 44px; height: 44px;
   border: 3px solid transparent;
-  border-top-color: var(--facebook);
+  border-top-color: var(--accent);
   border-right-color: #764ba2;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
@@ -281,6 +287,14 @@ a:hover { text-decoration: underline; }
   background: rgba(255,255,255,0.18);
   box-shadow: 0 0 0 3px rgba(255,255,255,0.08);
 }
+
+/* 6-column grid for 6 platforms */
+@media (min-width: 60em) {
+  .cards--top { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 80em) {
+  .cards--top { grid-template-columns: repeat(6, 1fr); }
+}
 .search__input::placeholder { color: rgba(255,255,255,0.5); }
 
 /* When not in header-bg, adapt search colors */
@@ -359,7 +373,7 @@ body.dark .search__icon { color: rgba(255,255,255,0.65); }
 .notifications__mark-read {
   background: none;
   border: none;
-  color: var(--facebook);
+  color: var(--accent);
   font-size: 0.7rem;
   cursor: pointer;
   font-weight: 600;
@@ -384,7 +398,7 @@ body.dark .search__icon { color: rgba(255,255,255,0.65); }
   content: "";
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--facebook);
+  background: var(--accent);
   flex-shrink: 0;
   margin-top: 0.35rem;
 }
@@ -479,11 +493,26 @@ body.dark .search__icon { color: rgba(255,255,255,0.65); }
 }
 
 /* Platform accent borders with glow on hover */
-.card--facebook  { border-top: 3px solid var(--facebook); }
-.card--facebook:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--facebook-glow); }
+.card--meta      { border-top: 3px solid var(--meta); }
+.card--meta:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--meta-glow); }
 
-.card--twitter   { border-top: 3px solid var(--twitter); }
-.card--twitter:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--twitter-glow); }
+.card--x         { border-top: 3px solid var(--x); }
+.card--x:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--x-glow); }
+body.dark .card--x { border-top-color: #fff; }
+body.dark .card--x:hover { box-shadow: var(--shadow-hover), 0 -4px 20px rgba(255,255,255,0.15); }
+/* X icon: black → white in dark mode */
+body.dark .card--x img.card__icon,
+body.dark [alt="X"] { filter: invert(1); }
+
+.card--linkedin  { border-top: 3px solid var(--linkedin); }
+.card--linkedin:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--linkedin-glow); }
+
+.card--github    { border-top: 3px solid var(--github); }
+.card--github:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--github-glow); }
+/* GitHub icon: white → visible in light mode, fine in dark */
+body.light .card--github img.card__icon,
+body.light [alt="GitHub"] { filter: invert(1); }
+body.dark .card--github img.card__icon { filter: none; }
 
 .card--youtube   { border-top: 3px solid var(--youtube); }
 .card--youtube:hover { box-shadow: var(--shadow-hover), 0 -4px 20px var(--youtube-glow); }
@@ -625,7 +654,72 @@ main > .container > h2::before {
   width: 3px;
   height: 60%;
   border-radius: 3px;
-  background: linear-gradient(180deg, var(--facebook), #764ba2);
+  background: linear-gradient(180deg, var(--accent), #764ba2);
+}
+
+/* ─── Live Indicator & Last Updated ─── */
+.header__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--limegreen);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--limegreen);
+  box-shadow: 0 0 6px var(--limegreen-glow);
+  animation: livePulse 2s ease-in-out infinite;
+}
+.live-dot.pulse {
+  animation: livePulse 0.6s ease-in-out 1;
+}
+@keyframes livePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.4); }
+}
+.header-bg .live-indicator { color: rgba(29, 180, 137, 0.9); }
+.last-updated {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+}
+
+/* ─── Export Button ─── */
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  color: #fff;
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all var(--transition);
+}
+.export-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+.export-btn__label {
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 /* ─── Footer ─── */
@@ -639,7 +733,7 @@ main > .container > h2::before {
 }
 .footer a {
   font-weight: 600;
-  background: linear-gradient(135deg, var(--facebook), #764ba2);
+  background: linear-gradient(135deg, var(--accent), #764ba2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

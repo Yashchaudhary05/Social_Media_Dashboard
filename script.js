@@ -147,10 +147,12 @@ function renderOverviewCards(platforms) {
    Render Chart.js trend charts
    ────────────────────────────────────────── */
 const chartColors = {
-  facebook:  { bg: "rgba(25,143,245,0.15)", border: "#198ff5" },
-  instagram: { bg: "rgba(223,73,150,0.15)", border: "#df4996" },
-  twitter:   { bg: "rgba(28,160,242,0.15)", border: "#1ca0f2" },
-  youtube:   { bg: "rgba(196,3,42,0.15)",   border: "#c4032a" },
+  meta:      { bg: "rgba(0,129,251,0.15)",   border: "#0081FB" },
+  instagram: { bg: "rgba(223,73,150,0.15)",  border: "#df4996" },
+  x:         { bg: "rgba(100,100,100,0.15)", border: "#555" },
+  youtube:   { bg: "rgba(196,3,42,0.15)",    border: "#c4032a" },
+  linkedin:  { bg: "rgba(10,102,194,0.15)",  border: "#0A66C2" },
+  github:    { bg: "rgba(110,64,201,0.15)",  border: "#6e40c9" },
 };
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 let chartInstances = [];
@@ -253,36 +255,141 @@ searchInput.addEventListener("input", (e) => {
 });
 
 /* ──────────────────────────────────────────
+   CSV Export
+   ────────────────────────────────────────── */
+let cachedPlatforms = [];
+
+function exportCSV() {
+  if (!cachedPlatforms.length) return;
+  const rows = [["Platform", "Followers", "Change Today", "Direction"]];
+  cachedPlatforms.forEach((p) => {
+    rows.push([p.name, p.followers, p.changeToday, p.changeDirection]);
+  });
+  const csv = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `dashboard-export-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+const exportBtn = $("#exportBtn");
+if (exportBtn) exportBtn.addEventListener("click", exportCSV);
+
+/* ──────────────────────────────────────────
+   Last Updated Timestamp
+   ────────────────────────────────────────── */
+const lastUpdatedEl = $("#lastUpdated");
+
+function updateTimestamp() {
+  if (!lastUpdatedEl) return;
+  const now = new Date();
+  lastUpdatedEl.textContent = `Last updated: ${now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+}
+
+/* ──────────────────────────────────────────
+   Auto-refresh (simulate live data every 30s)
+   ────────────────────────────────────────── */
+function jitter(value, percent = 3) {
+  const delta = Math.floor(value * (percent / 100));
+  return value + Math.floor(Math.random() * delta * 2) - delta;
+}
+
+function simulateLiveUpdate(data) {
+  data.platforms.forEach((p) => {
+    p.followers = jitter(p.followers, 1);
+    p.changeToday = Math.max(0, jitter(p.changeToday, 15));
+    p.overview.forEach((o) => {
+      o.value = jitter(o.value, 5);
+      o.changePercent = Math.max(0, jitter(o.changePercent, 10));
+    });
+    // Shift trend and add new point
+    p.trend.shift();
+    p.trend.push(p.followers);
+  });
+  data.totalFollowers = data.platforms.reduce((sum, p) => sum + p.followers, 0);
+  return data;
+}
+
+let dashboardData = null;
+let refreshInterval = null;
+
+function refresh() {
+  if (!dashboardData) return;
+  dashboardData = simulateLiveUpdate(dashboardData);
+  cachedPlatforms = dashboardData.platforms;
+
+  // Update total (no animation on refresh — just set it)
+  totalEl.textContent = `Total Followers: ${dashboardData.totalFollowers.toLocaleString()}`;
+
+  renderPlatformCards(dashboardData.platforms);
+  renderOverviewCards(dashboardData.platforms);
+
+  // Update charts with new data
+  chartInstances.forEach((chart, i) => {
+    if (dashboardData.platforms[i]) {
+      chart.data.datasets[0].data = [...dashboardData.platforms[i].trend];
+      chart.update("none"); // no animation on refresh
+    }
+  });
+
+  updateTimestamp();
+
+  // Pulse indicator
+  const dot = $("#liveDot");
+  if (dot) {
+    dot.classList.remove("pulse");
+    void dot.offsetWidth; // force reflow
+    dot.classList.add("pulse");
+  }
+}
+
+/* ──────────────────────────────────────────
    Bootstrap
    ────────────────────────────────────────── */
 (async function init() {
   loadTheme();
   try {
-    const data = await fetchDashboardData();
+    dashboardData = await fetchDashboardData();
+    cachedPlatforms = dashboardData.platforms;
 
     // Total followers with animation
-    const totalTarget = data.totalFollowers;
+    const totalTarget = dashboardData.totalFollowers;
     totalEl.textContent = "Total Followers: 0";
-    const totalSpan = totalEl;
     const startTime = performance.now();
     const dur = 1400;
     (function countUp(now) {
       const progress = Math.min((now - startTime) / dur, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      totalSpan.textContent = `Total Followers: ${Math.floor(totalTarget * eased).toLocaleString()}`;
+      totalEl.textContent = `Total Followers: ${Math.floor(totalTarget * eased).toLocaleString()}`;
       if (progress < 1) requestAnimationFrame(countUp);
     })(startTime);
 
-    renderPlatformCards(data.platforms);
-    renderOverviewCards(data.platforms);
-    renderCharts(data.platforms);
-    renderNotifications(data.notifications);
+    renderPlatformCards(dashboardData.platforms);
+    renderOverviewCards(dashboardData.platforms);
+    renderCharts(dashboardData.platforms);
+    renderNotifications(dashboardData.notifications);
+    updateTimestamp();
 
     // Reveal
     loader.classList.add("hidden");
     app.classList.remove("hidden");
+
+    // Start auto-refresh every 30 seconds
+    refreshInterval = setInterval(refresh, 30000);
   } catch (err) {
     loader.innerHTML = `<p class="loader__error">Failed to load dashboard data. Please refresh.</p>`;
     console.error(err);
   }
 })();
+
+/* ──────────────────────────────────────────
+   Service Worker Registration
+   ────────────────────────────────────────── */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}

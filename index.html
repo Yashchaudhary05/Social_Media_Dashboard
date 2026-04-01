@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Social Media Dashboard — real-time analytics across Facebook, Instagram, Twitter, and YouTube with dark mode, trend charts, and responsive design." />
+    <meta name="description" content="Social Media Dashboard — real-time analytics across Meta, Instagram, X, YouTube, LinkedIn, and GitHub with dark mode, trend charts, and responsive design." />
     <meta name="author" content="Yash Chaudhary" />
 
     <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#667eea" />
 
     <title>Social Media Dashboard | Yash Chaudhary</title>
 
@@ -34,6 +36,10 @@
           <div class="header__title">
             <h1>Social Media Dashboard</h1>
             <span class="header__subtitle" id="totalFollowers">Total Followers: &mdash;</span>
+          <div class="header__meta">
+            <span class="live-indicator"><span class="live-dot" id="liveDot"></span> Live</span>
+            <span class="last-updated" id="lastUpdated">Last updated: &mdash;</span>
+          </div>
           </div>
 
           <div class="header__actions">
@@ -42,6 +48,12 @@
               <svg class="search__icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input type="search" id="searchInput" class="search__input" placeholder="Filter platforms&hellip;" aria-label="Search platforms" />
             </div>
+
+          <!-- Export -->
+            <button class="export-btn" id="exportBtn" aria-label="Export data as CSV">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span class="export-btn__label">CSV</span>
+            </button>
 
             <!-- Notifications -->
             <div class="notifications" id="notificationsWidget">
@@ -75,7 +87,7 @@
 
       <main>
         <!-- Platform follower cards — rendered by JS -->
-        <section class="container cards" id="platformCards" aria-label="Platform follower cards"></section>
+        <section class="container cards cards--top" id="platformCards" aria-label="Platform follower cards"></section>
 
         <!-- Trend Charts -->
         <section class="container">
@@ -91,7 +103,7 @@
       </main>
 
       <footer class="footer container">
-        <p>Built by <a href="https://github.com/Yashchaudhary05" target="_blank" rel="noopener noreferrer">Yash Chaudhary</a> &bull; Data refreshes on load</p>
+        <p>Built by <a href="https://github.com/Yashchaudhary05" target="_blank" rel="noopener noreferrer">Yash Chaudhary</a> &bull; Auto-refreshes every 30s &bull; <span id="footerYear">2026</span></p>
       </footer>
     </div>
   </body>

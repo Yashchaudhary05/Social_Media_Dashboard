@@ -1,0 +1,7 @@
+aws_region      = "us-east-1"
+environment     = "production"
+instance_type   = "t2.micro"
+key_pair_name   = "dashboard-key"
+min_instances   = 1
+max_instances   = 3
+desired_instances = 2
