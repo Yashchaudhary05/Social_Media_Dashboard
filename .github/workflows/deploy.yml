@@ -27,9 +27,8 @@ jobs:
       - name: Validate HTML
         run: |
           sudo apt-get install -y tidy > /dev/null 2>&1
-          tidy -q -e index.html || true
-          # fail only on outright parse errors (exit code 2)
-          tidy -q -e index.html; EC=$?; [ "$EC" -lt 2 ]
+          # tidy exits 0=clean, 1=warnings, 2=errors — fail only on errors
+          tidy -q -e index.html && echo "HTML is clean" || { EC=$?; if [ "$EC" -ge 2 ]; then exit 1; else echo "HTML has warnings (ok)"; fi; }
 
       - name: Validate JSON data
         run: python3 -c "import json; json.load(open('data.json'))"
